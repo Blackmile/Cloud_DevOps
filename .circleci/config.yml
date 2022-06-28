@@ -6,33 +6,6 @@ version: 2.1
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
 
-  Print_hello:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - run:
-          name: "Hello"
-          command: "echo hello"
-
-  Print_world:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - run:
-          name: "World"
-          command: "echo world"
-  
-  Print_Name:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - run:
-          name: "testing env var"
-          command: echo ${ENV}
-
   save_hello_world_output:
     docker:
       - image: circleci/node:13.8.0
@@ -42,32 +15,23 @@ jobs:
           name: "helo output"
           command: echo "text to output here -- this ouput stanley --" > output.txt
       - persist_to_workspace:
-          root: /tmp/workspace
+          root: ~/
           paths:
-            - target/output.txt
-            - build/*
+            - output.txt
   
   print_output_file:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - checkout
       - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: "the output"
-          command: cat output.txt
+          at: ~/
+      - run: cat output.txt
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   node-workflow:
     jobs:
-      - Print_hello
-      - Print_world:
-          requires: [Print_hello]
-      - Print_Name:
-          requires: [Print_world]
       - save_hello_world_output
       - print_output_file:
           requires: [save_hello_world_output]
