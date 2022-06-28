@@ -12,8 +12,8 @@ commands:
           type: string
           default: cat $CIRCLE_WORKFLOW_ID
       steps:
-        - run: echo << parameters.to >>
-        
+        - run: parameters.to
+
 jobs:
 
   save_hello_world_output:
