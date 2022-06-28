@@ -10,46 +10,21 @@ commands:
       parameters:
         to:
           type: string
-          default: $CIRCLE_WORKFLOW_ID
+          default: cat $CIRCLE_WORKFLOW_ID
       steps:
-        - run: echo << parameters.to >>
+        - run:  parameters.to
 
 jobs:
-
-  save_hello_world_output:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - run:
-          name: "helo output"
-          command: echo "text to output here -- this ouput stanley --" > output.txt
-      - persist_to_workspace:
-          root: .
-          paths:
-            - output.txt
-  
-  print_output_file:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run: cat output.txt
 
   to_print_command:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - print_pipeline_id
+    when: on_fail
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   node-workflow:
     jobs:
-      - save_hello_world_output
-      - print_output_file:
-          requires: [save_hello_world_output]
-      - to_print_command:
-          requires: [print_output_file]
+      - to_print_command
