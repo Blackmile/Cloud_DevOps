@@ -10,9 +10,9 @@ commands:
       parameters:
         to:
           type: string
-          default: cat $CIRCLE_WORKFLOW_ID
+          default: $CIRCLE_WORKFLOW_ID
       steps:
-        - run: parameters.to
+        - run: echo << parameters.to >>
 
 jobs:
 
