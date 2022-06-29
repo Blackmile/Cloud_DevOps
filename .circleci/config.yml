@@ -4,42 +4,21 @@ version: 2.1
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+
 jobs:
 
-  Print_hello:
+  to_print_command:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - checkout
-      - run:
-          name: "Hello"
-          command: "echo hello"
-
-  Print_world:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - run:
-          name: "World"
-          command: "echo world"
-  
-  Print_Name:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - run:
-          name: "testing env var"
-          command: echo ${ENV}
-
+      - run: exit 0
+      - run: 
+          name: on error
+          command: echo "Hello Error!"
+          when: on_fail
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   node-workflow:
     jobs:
-      - Print_hello
-      - Print_world:
-          requires: [Print_hello]
-      - Print_Name:
-          requires: [Print_world]
+      - to_print_command
