@@ -7,6 +7,22 @@ version: 2.1
 
 jobs:
 
+  configure_infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["c1:45:3b:cb:42:2f:6d:f0:5d:c7:fc:cc:9d:84:b4:a5"]
+      - run:
+          name: Install Ansible
+          command: |
+            apk add --update ansible #
+      - run:
+          name: Run Playbook and Configure server
+          command: |
+            ansible-playbook -i inventory main.yml
+
   create_infrastructure:
     docker:
       - image: amazon/aws-cli
@@ -24,4 +40,5 @@ jobs:
 workflows:
   node-workflow:
     jobs:
-      - create_infrastructure
+      - configure_infrastructure
+      # - create_infrastructure
